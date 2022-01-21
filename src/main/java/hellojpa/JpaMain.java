@@ -31,11 +31,11 @@ public class JpaMain {
 //            findMember.setName("kangA");
 
             //JPQL
-            List<Member> resultList = em.createQuery("select m from Member as m", Member.class).getResultList();
-
-            for (Member member : resultList) {
-                System.out.println("JpaMain.main member.name =" + member.getName());
-            }
+//            List<Member> resultList = em.createQuery("select m from Member as m", Member.class).getResultList();
+//
+//            for (Member member : resultList) {
+//                System.out.println("JpaMain.main member.name =" + member.getName());
+//            }
 
             tx.commit();
         } catch (Exception e) {
