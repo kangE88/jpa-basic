@@ -23,10 +23,10 @@ import java.util.Date;
 //@Table(name = "user")
 public class Member {
     // SequenceGenerator
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_generator") //DB에 맞게 자동으로 생성
+    //@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_generator") //DB에 맞게 자동으로 생성
     // TableGenerator
     //@Id @GeneratedValue(strategy = GenerationType.TABLE, generator = "member_seq_generator")
-    private Long id;
+    //private Long id;
 
     //@Column(name = "username")
     //nullable = 기본값 true //false 적용하면 not null 됨
@@ -35,8 +35,8 @@ public class Member {
     //length -> 문자길이 제약조건 String 타입에만 사용한다.
     //precision, scale BigDecimal 타입에서 사용(BigInteger도 사용할 수 있다.) precision은 소수점을 포함한 전체 자릿수를, scale은 소수의 자릿수다.
     //참고로 double, float 타입에는 적용되지 않는다. 특정 소수점을 사용할때 사용
-    @Column(name = "name", nullable = false)
-    private String userName;
+    //@Column(name = "name", nullable = false)
+    //private String userName;
 
     /*
         @Enumerated
@@ -61,4 +61,30 @@ public class Member {
 //
 //    @Transient //DB에 사용하지 않음
 //    private String temp;
+
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "MEMBER_ID")
+    private Long id;
+
+//    @Column(name = "USERNAME")
+//    private String username;
+
+    private String name;
+    private String city;
+    private String street;
+    private String zipcode;
+
+//    @Column(name = "TEAM_ID")
+//    private Long teamId;
+    //Member : Team -> N: 1 이므로 ManyToOne 사용 하며 JoinColumn 은 TeamId 이므로 설정
+
+    //다대일
+//    @ManyToOne
+//    @JoinColumn(name = "TEAM_ID")
+//    private Team team;
+
+    //일대다 양방향 설정
+//    @ManyToOne
+//    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
+//    private Team team;
 }
