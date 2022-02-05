@@ -9,6 +9,8 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn
 public class Item {
 
     @Id @GeneratedValue

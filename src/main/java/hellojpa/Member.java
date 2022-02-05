@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -21,7 +22,7 @@ import java.util.Date;
 //        pkColumnValue = "member_seq", allocationSize = 1
 //)
 //@Table(name = "user")
-public class Member {
+public class Member extends BaseEntity{
     // SequenceGenerator
     //@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_generator") //DB에 맞게 자동으로 생성
     // TableGenerator
@@ -73,6 +74,8 @@ public class Member {
     private String city;
     private String street;
     private String zipcode;
+
+
 
 //    @Column(name = "TEAM_ID")
 //    private Long teamId;

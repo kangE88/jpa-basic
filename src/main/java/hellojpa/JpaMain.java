@@ -66,6 +66,25 @@ public class JpaMain {
             //    System.out.println("JpaMain.main m = " + m.getUsername());
             //}
 
+            /*
+            * 고급매핑 - 조인 전략
+            */
+            Movie movie = new Movie();
+            movie.setDirector("aaaa");
+            movie.setActor("bbbb");
+            movie.setName("바람");
+            movie.setPrice(10000);
+
+            em.persist(movie);
+            
+            em.flush();
+            em.clear();
+
+            Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println("findMovie = " + findMovie);
+
+            //InheritanceType.JOINED 사용 예제
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
