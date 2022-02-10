@@ -10,11 +10,11 @@ import java.util.Date;
 @Entity
 @Getter @Setter
 //sequence 전략 - SequenceGenerator 사용 시
-@SequenceGenerator(
-        name = "member_seq_generator",
-        sequenceName = "member_seq"
-        //initialValue = 1, allocationSize =
-)
+//@SequenceGenerator(
+//        name = "member_seq_generator",
+//        sequenceName = "member_seq"
+//        //initialValue = 1, allocationSize =
+//)
 //table 전략 - TableGenerator 사용 시
 //@TableGenerator(
 //        name = "member_seq_generator",
@@ -22,7 +22,7 @@ import java.util.Date;
 //        pkColumnValue = "member_seq", allocationSize = 1
 //)
 //@Table(name = "user")
-public class Member extends BaseEntity{
+public class Member {
     // SequenceGenerator
     //@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_generator") //DB에 맞게 자동으로 생성
     // TableGenerator
@@ -67,17 +67,20 @@ public class Member extends BaseEntity{
     @Column(name = "MEMBER_ID")
     private Long id;
 
-//    @Column(name = "USERNAME")
-//    private String username;
+    @Column(name = "USERNAME")
+    private String username;
 
-    private String name;
-    private String city;
-    private String street;
-    private String zipcode;
+    //기간 Period
+    @Embedded
+    private Period workPeriod;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Team team;
+    //주소 Address
+    @Embedded
+    private Address homeAddress;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn
+//    private Team team;
 
 //    @Column(name = "TEAM_ID")
 //    private Long teamId;

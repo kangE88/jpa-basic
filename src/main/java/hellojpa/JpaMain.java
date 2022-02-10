@@ -3,6 +3,7 @@ package hellojpa;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class JpaMain {
@@ -158,15 +159,15 @@ public class JpaMain {
             //즉시 로딩과 지연 로딩 End
 
             //영속성 전이(CASCADE)와 고아 객체
-            Child child1 = new Child();
-            Child child2 = new Child();
+            //Child child1 = new Child();
+            //Child child2 = new Child();
 
-            Parent parent = new Parent();
-            parent.addChild(child1);
-            parent.addChild(child2);
+            //Parent parent = new Parent();
+            //parent.addChild(child1);
+            //parent.addChild(child2);
 
             //parent와 child1 child2를 저장한다 가정했을때.. 아래와 같이 선언한다.
-            em.persist(parent);
+            //em.persist(parent);
             //em.persist(child1);
             //em.persist(child2);
 
@@ -184,6 +185,14 @@ public class JpaMain {
             //고아 객체
             //영속성 전이(CASCADE)와 고아 객체
 
+            //임베디드 타입 설정
+            Member member = new Member();
+            member.setUsername("hello");
+            member.setHomeAddress(new Address("city", "Street", "10000"));
+            member.setWorkPeriod(new Period(LocalDateTime.now(),LocalDateTime.now()));
+
+            em.persist(member);
+            //임베디드 타입 설정
 
             tx.commit();
         } catch (Exception e) {
