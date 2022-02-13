@@ -1,10 +1,15 @@
 package hellojpa;
 
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -186,13 +191,115 @@ public class JpaMain {
             //영속성 전이(CASCADE)와 고아 객체
 
             //임베디드 타입 설정
+//            Member member = new Member();
+//            member.setUsername("hello");
+//            member.setHomeAddress(new Address("city", "Street", "10000"));
+//            member.setWorkPeriod(new Period(LocalDateTime.now(),LocalDateTime.now()));
+//
+//            em.persist(member);
+            //임베디드 타입 설정
+
+            //값 타입과 불변 객체
+//            Address address = new Address("city", "Street", "10000");
+//
+//            Member member = new Member();
+//            member.setUsername("member1");
+//            member.setHomeAddress(address);
+//            em.persist(member);
+//
+//            //새로 생성해서 새로 집어 넣어야 한다.
+//            Address newAddress = new Address("NewCity", address.getStreet(), address.getZipcode());
+//            member.setHomeAddress(newAddress);
+
+
+//            Member member2 = new Member();
+//            member2.setUsername("member2");
+//            member2.setHomeAddress(copyAddress);
+//            em.persist(member2);
+
+            //첫번째 멤버만 주소를 변경하고 싶을때.. 아래와 같이 사용할것이다.
+            //member.getHomeAddress().setCity("newCity"); //이제 사용 불
+            //DB를 조회하면 둘다 변경되어 있다.
+
+
+            //값 타입과 불변 객체
+
+            //값 타입 컬렉션
             Member member = new Member();
-            member.setUsername("hello");
-            member.setHomeAddress(new Address("city", "Street", "10000"));
-            member.setWorkPeriod(new Period(LocalDateTime.now(),LocalDateTime.now()));
+            member.setUsername("member1");
+            member.setHomeAddress(new Address("city1","street","1000"));
+
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("족발");
+            member.getFavoriteFoods().add("피자");
+
+            member.getAddressHistory().add(new AddressEntity("old1", "street1", "1001"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street2", "1002"));
 
             em.persist(member);
-            //임베디드 타입 설정
+
+            em.flush();
+            em.clear();
+
+            //
+            System.out.println("JpaMain.main=======");
+            Member findMember = em.find(Member.class, member.getId());
+
+            //지연로딩이라 FavoriteFoods와 AddressHistory는 나오지 않는다.
+
+//            List<Address> addressHistory = findMember.getAddressHistory();
+//            for (Address address : addressHistory) {
+//                System.out.println("address = " + address.getCity());
+//            }
+//
+//            Set<String> favoriteFoods = findMember.getFavoriteFoods();
+//            for (String favoriteFood : favoriteFoods) {
+//                System.out.println("favoriteFood = " + favoriteFood);
+//            }
+            //위처럼 선언하고 사용해야 select쿼리가 실행된다.
+
+            //값 타입의 필드를 하나를 변경하고자 한다면 인스턴스를 새로 생성해서 교체해줘야 한다. 그렇지 않으면 서브사이드 쿼리에 의해 다른 컬럼도 전부 수정된다.
+            //city1 -> netCity
+            Address a = findMember.getHomeAddress();
+            findMember.setHomeAddress(new Address("netCity", a.getStreet(), a.getZipcode()));
+
+            //치킨 -> 한식
+            findMember.getFavoriteFoods().remove("치킨");
+            findMember.getFavoriteFoods().add("한식");
+
+            // 찾는 대상은 equals hashcode 동작한다
+            // 그러므로 아래와 같이 검색하여 삭제 후 등록 하는 방식을 사용한
+            findMember.getAddressHistory().remove(new AddressEntity("old1", "street1", "1001"));
+            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street1", "1001"));
+
+            //값 타입 컬렉션
+
+            //JPQL
+            List<Member> resultList = em.createQuery("select m FROM Member m where m.username like '%mem%'", Member.class).getResultList();
+
+            for (Member result : resultList) {
+                System.out.println("result = " + result.getUsername());
+            }
+            //JPQL
+
+            //Criteria
+
+            //Criteria 사용 준비
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Member> query = cb.createQuery(Member.class);
+
+            //루트 클래스 (조회를 시작할 클래스)
+            Root<Member> from = query.from(Member.class);
+
+            //쿼리 생성
+            CriteriaQuery<Member> where = query.select(from).where(cb.equal(from.get("username"), "mem"));
+            List<Member> resultList1 = em.createQuery(where).getResultList();
+
+            for (Member member1 : resultList1) {
+                System.out.println("member1 = " + member1.getUsername());
+            }
+
+            //Criteria
 
             tx.commit();
         } catch (Exception e) {
